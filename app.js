@@ -11,6 +11,12 @@ let ySpeed = 20;
 let ground_x = 100;
 let ground_y = 500;
 let ground_height = 5;
+let brickArray = [];
+
+// 用min, max的方式寫隨機
+function getRandomArbitrary(min, max) {
+    return min + Math.floor(Math.random() * (max - min));
+}
 
 class Brick {
     constructor(x, y) {
@@ -24,16 +30,37 @@ class Brick {
         ctx.fillStyle = "lightgreen";
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+
+    tochingBall(ballX, ballY) {
+        // 直接透過判定條件並回傳true or false
+        return (
+            ballX >= this.x - radius &&
+            ballX <= this.x + this.width + radius &&
+            ballY >= this.y - radius &&
+            ballY <= this.y + this.height + radius
+        );
+    }
 }
 
 // 製作所有的brick
-for (let i = 0; i < 10; i++) {}
+for (let i = 0; i < 10; i++) {
+    new Brick(getRandomArbitrary(0, 950), getRandomArbitrary(0, 550));
+}
 
 c.addEventListener("mousemove", e => {
     ground_x = e.clientX;
 });
 
 function drawCircle() {
+    // 確認球是否有打到磚塊
+    brickArray.forEach(brick => {
+        if (brick.tochingBall(circle_x, circle_y)) {
+            // 改變x, y方向速度，並且將brick從brickArray中移除
+            if (circle_y >= brick.y + brick.height) {
+            }
+        }
+    });
+
     // 確認球是否碰到橘色地板
     if (
         circle_x >= ground_x - radius &&
