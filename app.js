@@ -12,6 +12,7 @@ let ground_x = 100;
 let ground_y = 500;
 let ground_height = 5;
 let brickArray = [];
+let count = 0;
 
 // 用min, max的方式寫隨機
 function getRandomArbitrary(min, max) {
@@ -25,7 +26,9 @@ class Brick {
         this.width = 50;
         this.height = 50;
         brickArray.push(this);
+        this.visible = true;
     }
+
     drawBrick() {
         ctx.fillStyle = "lightgreen";
         ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -54,9 +57,26 @@ c.addEventListener("mousemove", e => {
 function drawCircle() {
     // 確認球是否有打到磚塊
     brickArray.forEach(brick => {
-        if (brick.tochingBall(circle_x, circle_y)) {
+        if (brick.visible && brick.tochingBall(circle_x, circle_y)) {
+            count++;
+            console.log(count);
+            brick.visible = false;
             // 改變x, y方向速度，並且將brick從brickArray中移除
-            if (circle_y >= brick.y + brick.height) {
+            if (circle_y >= brick.y + brick.height || circle_y <= brick.y) {
+                ySpeed *= -1;
+            }
+            if (circle_x <= brick.x || circle_x >= brick.x + brick.width) {
+                xSpeed *= -1;
+            }
+
+            // brickArray.splice(index, 1);
+            // if (brickArray.length == 0) {
+            //     alert("遊戲結束");
+            //     clearInterval(game);
+            // }
+            if (count == 10) {
+                alert("遊戲結束");
+                clearInterval(game);
             }
         }
     });
@@ -96,7 +116,9 @@ function drawCircle() {
 
     // 畫出所有的brick
     brickArray.forEach(brick => {
-        brick.drawBrick();
+        if (brick.visible) {
+            brick.drawBrick();
+        }
     });
 
     // 畫出可控制的地板
